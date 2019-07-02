@@ -54,6 +54,7 @@ exhibitorMatchApp = angular.module("exhibitorMatchApp", ['ngRoute'])
 		}).join('\n');
 
 		keywords.split('\n').forEach(function(keyword) {
+			var original_keyword = keyword;
 			var guess = vm.exhibitors.find(x => x.showroomName.replace('and', '&').toLowerCase() == keyword.trim().toLowerCase());
 
 			if (!guess) {
@@ -79,7 +80,7 @@ exhibitorMatchApp = angular.module("exhibitorMatchApp", ['ngRoute'])
 					console.log('>>>>> did not find ' + keyword);
 					vm.unmatchedExhibitors.push({keyword: keyword});
 					vm.outputText += outputExhibitor({showroomName: 'FIX: ' + keyword, exhibitorID: 0});
-					vm.allExhibitors.push({keyword: keyword, showroomName: keyword, link: "https://www.americasmart.com/browse/#/search?q=" + keyword.trim()[0].split()[0].toLowerCase()});
+					vm.allExhibitors.push({keyword: original_keyword, showroomName: keyword, link: "https://www.americasmart.com/browse/#/search?q=" + keyword.trim().toLowerCase()});
 				}
 				else {
 					if (possibilities.length > 1) {
@@ -87,6 +88,7 @@ exhibitorMatchApp = angular.module("exhibitorMatchApp", ['ngRoute'])
 					}
 					else {
 						guess = possibilities[0];
+						possibilities[0].showroomName = original_keyword;
 						possibilities[0].keyword = keyword;
 						possibilities[0].link = 'https://www.americasmart.com/browse/#/exhibitor/' + possibilities[0].exhibitorID;
 						vm.outputText += outputExhibitor(possibilities[0]);
@@ -98,6 +100,7 @@ exhibitorMatchApp = angular.module("exhibitorMatchApp", ['ngRoute'])
 				guess.keyword = keyword;
 				guess.link = 'https://www.americasmart.com/browse/#/exhibitor/' + guess.exhibitorID;
 				vm.matchedExhibitors.push(guess);
+				guess.showroomName = original_keyword;
 				vm.allExhibitors.push(guess);
 				vm.outputText += outputExhibitor(guess);
 			}
